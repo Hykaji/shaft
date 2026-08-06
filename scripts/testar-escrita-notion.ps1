@@ -30,7 +30,7 @@ $createBody = @{
             title = @(
                 @{
                     type = 'text'
-                    text = @{ content = 'Teste temporário · Modo Eixo App' }
+                    text = @{ content = 'Teste temporário · Shaft' }
                 }
             )
         }
@@ -38,7 +38,7 @@ $createBody = @{
 } | ConvertTo-Json -Depth 8 -Compress
 
 Write-Host ''
-Write-Host 'Modo Eixo - teste controlado de escrita' -ForegroundColor DarkYellow
+Write-Host 'Shaft - teste controlado de escrita' -ForegroundColor DarkYellow
 Write-Host 'Será criada uma página temporária e enviada imediatamente para a lixeira.'
 
 try {
@@ -74,7 +74,7 @@ catch {
         Write-Host 'A integração ainda não possui Insert content e Update content.' -ForegroundColor Red
     }
     elseif ($statusCode -eq 404) {
-        Write-Host 'A página Modo Eixo · 2026 não está disponível para esta integração.' -ForegroundColor Red
+        Write-Host 'A página Shaft · 2026 não está disponível para esta integração.' -ForegroundColor Red
     }
     else {
         Write-Host 'A escrita não pôde ser testada. Nenhuma página foi criada.' -ForegroundColor Red

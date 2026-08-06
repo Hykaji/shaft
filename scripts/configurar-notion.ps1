@@ -4,7 +4,7 @@ $projectDirectory = Split-Path -Parent $PSScriptRoot
 $environmentFile = Join-Path $projectDirectory '.env.local'
 
 Write-Host ''
-Write-Host 'Modo Eixo - conexão segura com o Notion' -ForegroundColor DarkYellow
+Write-Host 'Shaft - conexão segura com o Notion' -ForegroundColor DarkYellow
 Write-Host 'O token não será exibido e ficará somente neste computador.'
 Write-Host ''
 

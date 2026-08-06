@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Modo Eixo",
+  title: "Shaft",
   description: "Seu diário pessoal minimalista para rotina, treinos, finanças e progresso.",
   manifest: "/manifest.webmanifest",
   icons: {

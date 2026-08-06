@@ -12,7 +12,7 @@ New-Item -ItemType Directory -Path $workDirectory -Force | Out-Null
 [IO.File]::WriteAllText($logFile, '', (New-Object System.Text.UTF8Encoding($false)))
 
 Write-Host ''
-Write-Host 'Modo Eixo - preparacao da versao privada' -ForegroundColor DarkYellow
+Write-Host 'Shaft - preparacao da versao privada' -ForegroundColor DarkYellow
 Write-Host 'Esta etapa pode levar alguns minutos.'
 Write-Host ''
 

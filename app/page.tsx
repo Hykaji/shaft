@@ -1,5 +1,5 @@
-import { ModoEixoApp } from "./ModoEixoApp";
+import { ShaftApp } from "./ShaftApp";
 
 export default function Home() {
-  return <ModoEixoApp />;
+  return <ShaftApp />;
 }

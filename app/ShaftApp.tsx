@@ -27,7 +27,7 @@ const fallbackNotion: DashboardData = {
     date: "4 de agosto",
     mood: "Neutro",
     energy: 6,
-    win: "Começou um projeto no Create, passou a manhã com a namorada e estruturou o Diário Modo Eixo.",
+    win: "Começou um projeto no Create, passou a manhã com a namorada e estruturou o diário Shaft.",
   },
   exercises: [
     ["Supino na máquina horizontal sentado", "30 kg", "Peito"],
@@ -46,7 +46,7 @@ const nav: Array<[Tab, string, string]> = [
   ["financas", "Finanças", "◌"],
 ];
 
-export function ModoEixoApp() {
+export function ShaftApp() {
   const [tab, setTab] = useState<Tab>("hoje");
   const [sheet, setSheet] = useState<Sheet>(null);
   const [notion, setNotion] = useState<DashboardData>(fallbackNotion);
@@ -88,8 +88,8 @@ export function ModoEixoApp() {
     <main className="app-shell">
       <div className="app-frame">
         <header className="topbar">
-          <div className="brand-mark">E</div>
-          <div className="brand-copy"><p className="eyebrow">MODO EIXO</p><h1>{tab === "hoje" ? "Bom dia, Kaji" : nav.find((item) => item[0] === tab)?.[1]}</h1></div>
+          <div className="brand-mark" aria-hidden="true">⚙</div>
+          <div className="brand-copy"><p className="eyebrow">SHAFT</p><h1>{tab === "hoje" ? "Bom dia, Kaji" : nav.find((item) => item[0] === tab)?.[1]}</h1></div>
           <a className="notion-link" href="https://app.notion.com/p/3b2f65ea97b0804b86befa78f9f63139" target="_blank" rel="noreferrer" aria-label="Abrir painel no Notion">N</a>
         </header>
 
@@ -183,7 +183,7 @@ function CheckinSheet({ onClose, onSave }: { onClose: () => void; onSave: (paylo
     const data = Object.fromEntries(new FormData(event.currentTarget));
     try { await onSave(data); } catch (cause) { setError(cause instanceof Error ? cause.message : "Falha ao salvar."); setSaving(false); }
   }
-  return <SheetFrame title="Como foi seu dia?" eyebrow="SALVAR CHECK-IN" onClose={onClose}><form className="eixo-form" onSubmit={submit}>
+  return <SheetFrame title="Como foi seu dia?" eyebrow="SALVAR CHECK-IN" onClose={onClose}><form className="shaft-form" onSubmit={submit}>
     <div className="form-grid"><Select label="Tipo de dia" name="dayType" options={["Trabalho", "Folga", "Férias"]} /><Select label="Humor" name="mood" options={["Ótimo", "Bom", "Neutro", "Ruim", "Muito ruim"]} /><Field label="Energia · 1 a 10" name="energy" type="number" min="1" max="10" defaultValue="6" /></div>
     <Select label="Sono" name="sleep" options={["Completo", "Mínimo", "Não feito", "Não planejado"]} defaultValue="Não feito" />
     <Select label="Treino" name="training" options={["Completo", "Mínimo", "Não feito", "Não planejado"]} defaultValue="Não planejado" />
@@ -202,7 +202,7 @@ function FinanceSheet({ mode, onClose, onSave }: { mode: "expense" | "income" | 
     const data = Object.fromEntries(new FormData(event.currentTarget));
     try { await onSave({ ...data, type: mode === "income" ? "Entrada" : "Saída", planned: mode === "planned" }); } catch (cause) { setError(cause instanceof Error ? cause.message : "Falha ao salvar."); setSaving(false); }
   }
-  return <SheetFrame title={title} eyebrow="FINANÇAS · NOTION" onClose={onClose}><form className="eixo-form" onSubmit={submit}>
+  return <SheetFrame title={title} eyebrow="FINANÇAS · NOTION" onClose={onClose}><form className="shaft-form" onSubmit={submit}>
     <Field label="Descrição" name="description" placeholder={mode === "planned" ? "Ex.: presente de aniversário" : "Ex.: almoço"} required />
     <Field label="Valor em reais" name="amount" type="number" min="0.01" step="0.01" required />
     <Select label="Categoria" name="category" options={["Salário", "Moradia", "Alimentação", "Transporte", "Saúde", "Estudos", "Lazer e social", "Assinaturas", "Compras", "Outros"]} defaultValue={mode === "income" ? "Salário" : "Compras"} />
@@ -219,7 +219,7 @@ function TrainingSheet({ exercises, onClose, onSave }: { exercises: string[][]; 
     event.preventDefault(); setSaving(true); setError(""); const form = new FormData(event.currentTarget);
     try { await onSave({ exercises: items, status: form.get("status"), duration: form.get("duration"), energy: form.get("energy"), summary: form.get("summary") }); } catch (cause) { setError(cause instanceof Error ? cause.message : "Falha ao salvar."); setSaving(false); }
   }
-  return <SheetFrame title="Confirmar treino" eyebrow="CARGAS · NOTION" onClose={onClose}><form className="eixo-form" onSubmit={submit}>
+  return <SheetFrame title="Confirmar treino" eyebrow="CARGAS · NOTION" onClose={onClose}><form className="shaft-form" onSubmit={submit}>
     <div className="training-edit-list">{items.map((item, index) => <article key={item.name}><div><strong>{item.name}</strong><small>{item.group}</small></div><label><span>Carga</span><input type="number" min="0" step="0.5" value={item.load} onChange={(event) => setItems((current) => current.map((row, i) => i === index ? { ...row, load: Number(event.target.value) } : row))} /></label><label className="check-row"><input type="checkbox" checked={item.completed} onChange={(event) => setItems((current) => current.map((row, i) => i === index ? { ...row, completed: event.target.checked } : row))} />Feito</label><label className="check-row"><input type="checkbox" checked={item.increase} onChange={(event) => setItems((current) => current.map((row, i) => i === index ? { ...row, increase: event.target.checked } : row))} />+5 kg próxima</label></article>)}</div>
     <div className="form-grid"><Select label="Resultado" name="status" options={["Completo", "Mínimo"]} /><Field label="Duração · min" name="duration" type="number" min="1" defaultValue="60" /><Field label="Energia · 1 a 10" name="energy" type="number" min="1" max="10" defaultValue="6" /></div><TextArea label="Resumo opcional" name="summary" placeholder="Como o treino pareceu?" />
     <p className="form-note">Marcar +5 kg cria uma sugestão para a próxima sessão; não altera a carga atual.</p>{error && <p className="form-error">{error}</p>}<button className="primary-button" disabled={saving}>{saving ? "Salvando…" : "Salvar treino"}</button>

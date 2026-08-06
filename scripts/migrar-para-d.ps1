@@ -3,12 +3,12 @@ $ErrorActionPreference = 'Stop'
 $expectedSource = 'C:\Users\taran\Documents\Codex\2026-08-04\quero-usar-esta-conversa-como-meu-2'
 $source = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot)).TrimEnd('\')
 $destinationParent = 'D:\Aplicativos'
-$destination = 'D:\Aplicativos\Modo Eixo App'
+$destination = 'D:\Aplicativos\Shaft'
 $minimumFreeBytes = 5GB
 $bundledPnpm = 'C:\Users\taran\.cache\codex-runtimes\codex-primary-runtime\dependencies\bin\fallback\pnpm.cmd'
 
 Write-Host ''
-Write-Host 'Modo Eixo - migracao segura para o disco D' -ForegroundColor DarkYellow
+Write-Host 'Shaft - migracao segura para o disco D' -ForegroundColor DarkYellow
 Write-Host ''
 
 if (-not [string]::Equals($source, $expectedSource, [StringComparison]::OrdinalIgnoreCase)) {
@@ -76,7 +76,7 @@ foreach ($item in $itemsToCopy) {
     }
 }
 
-$staging = Join-Path $destinationParent ('Modo Eixo App.migrando-' + [Guid]::NewGuid().ToString('N'))
+$staging = Join-Path $destinationParent ('Shaft.migrando-' + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $staging -ErrorAction Stop | Out-Null
 
 Write-Host 'Copiando os arquivos essenciais do aplicativo...'
@@ -88,7 +88,7 @@ try {
     if (-not (Test-Path -LiteralPath (Join-Path $staging 'package.json'))) {
         throw 'A copia nao contem package.json.'
     }
-    if (-not (Test-Path -LiteralPath (Join-Path $staging 'app\ModoEixoApp.tsx'))) {
+    if (-not (Test-Path -LiteralPath (Join-Path $staging 'app\ShaftApp.tsx'))) {
         throw 'A copia nao contem o aplicativo principal.'
     }
     if (-not (Test-Path -LiteralPath (Join-Path $staging '.env.local'))) {
@@ -145,7 +145,7 @@ try {
     [IO.File]::WriteAllText($statusFile, 'success', (New-Object Text.UTF8Encoding($false)))
     Write-Host ''
     Write-Host 'Migracao e validacao concluidas.' -ForegroundColor Green
-    Write-Host 'Abra D:\Aplicativos\Modo Eixo App no Codex para continuar a publicacao.'
+    Write-Host 'Abra D:\Aplicativos\Shaft no Codex para continuar a publicacao.'
 }
 finally {
     Pop-Location

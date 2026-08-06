@@ -24,7 +24,7 @@ $body = @{ page_size = 1 } | ConvertTo-Json -Compress
 $sourceId = 'e389f37d-3d89-4075-ac23-6bb73e88733a'
 
 Write-Host ''
-Write-Host 'Modo Eixo - teste de leitura do Notion' -ForegroundColor DarkYellow
+Write-Host 'Shaft - teste de leitura do Notion' -ForegroundColor DarkYellow
 Write-Host 'Consultando a base Atividades sem alterar dados...'
 
 try {
@@ -44,7 +44,7 @@ catch {
     $friendlyMessage = switch ($statusCode) {
         401 { 'O token foi recusado. Copie novamente o Installation access token.' }
         403 { 'Ative a permissão Read content na integração.' }
-        404 { 'Adicione Modo Eixo · 2026 em Content access.' }
+        404 { 'Adicione Shaft · 2026 em Content access.' }
         429 { 'O Notion pediu uma pausa. Aguarde um minuto e tente novamente.' }
         default { 'Não foi possível alcançar o Notion. Verifique sua internet e tente novamente.' }
     }

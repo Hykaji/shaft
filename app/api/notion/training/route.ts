@@ -61,7 +61,7 @@ export async function POST(request: Request) {
       "Duração min": property.number(duration),
       "Energia": property.number(energy),
       "Abdômen": property.checkbox(exercises.some((item) => String(item.name).toLowerCase().includes("abdominal") && item.completed)),
-      "Resumo": property.text(summary || `${saved} exercícios registrados pelo Modo Eixo App.`),
+      "Resumo": property.text(summary || `${saved} exercícios registrados pelo Shaft.`),
     });
 
     return Response.json({ saved, sessionUpdated: true });
