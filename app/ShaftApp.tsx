@@ -1,43 +1,21 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useReducer, useRef, useState } from "react";
+import {
+  buildTrainingExercisePayload,
+  createTrainingFormItems,
+  dashboardReducer,
+  getValidExercises,
+  initialDashboardState,
+  isTrainingFormValid,
+  parseEditableLoad,
+  shouldShowRetryAction,
+  updateTrainingFormLoad,
+} from "./lib/dashboard-state";
+import type { DashboardData, DashboardRequestKind, ExerciseRow, SyncStatus } from "./lib/dashboard-state";
 
 type Tab = "hoje" | "diario" | "treinos" | "financas";
 type Sheet = "checkin" | "training" | "expense" | "income" | "planned" | null;
-
-type DashboardData = {
-  syncedAt: string;
-  level: number;
-  xp: number;
-  nextLevel: number;
-  balance: string;
-  week: string;
-  checkin: { date: string; mood: string; energy: number; win: string };
-  exercises: string[][];
-};
-
-const fallbackNotion: DashboardData = {
-  syncedAt: "05/08/2026",
-  level: 1,
-  xp: 0,
-  nextLevel: 200,
-  balance: "R$ 415,27",
-  week: "03–09 de agosto · início leve",
-  checkin: {
-    date: "4 de agosto",
-    mood: "Neutro",
-    energy: 6,
-    win: "Começou um projeto no Create, passou a manhã com a namorada e estruturou o diário Shaft.",
-  },
-  exercises: [
-    ["Supino na máquina horizontal sentado", "30 kg", "Peito"],
-    ["Crucifixo na máquina horizontal sentado", "30 kg", "Peito"],
-    ["Flying deitado com pesos", "9 kg", "Peito"],
-    ["Rosca tríceps com barra", "15 kg", "Tríceps"],
-    ["Tríceps pulley", "15 kg", "Tríceps"],
-    ["Abdominal", "Peso corporal", "Abdômen"],
-  ],
-};
 
 const nav: Array<[Tab, string, string]> = [
   ["hoje", "Hoje", "●"],
@@ -49,22 +27,28 @@ const nav: Array<[Tab, string, string]> = [
 export function ShaftApp() {
   const [tab, setTab] = useState<Tab>("hoje");
   const [sheet, setSheet] = useState<Sheet>(null);
-  const [notion, setNotion] = useState<DashboardData>(fallbackNotion);
-  const [live, setLive] = useState(false);
+  const [{ notion, syncStatus, retrying }, dispatchDashboard] = useReducer(dashboardReducer, initialDashboardState);
+  const requestSequence = useRef(0);
   const [notice, setNotice] = useState("");
+  const trainingExercises = getValidExercises(notion?.exercises);
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (kind: DashboardRequestKind = "refresh") => {
+    const requestId = ++requestSequence.current;
+    dispatchDashboard({ type: "start", requestId, kind });
     try {
       const response = await fetch("/api/notion/dashboard", { cache: "no-store" });
       if (!response.ok) throw new Error();
-      setNotion(await response.json());
-      setLive(true);
+      const data = await response.json() as DashboardData;
+      dispatchDashboard({ type: "success", requestId, data });
     } catch {
-      setLive(false);
+      dispatchDashboard({ type: "failure", requestId });
     }
   }, []);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    const initialLoad = window.setTimeout(() => refresh("initial"), 0);
+    return () => window.clearTimeout(initialLoad);
+  }, [refresh]);
 
   async function save(endpoint: string, payload: unknown) {
     const response = await fetch(endpoint, {
@@ -74,7 +58,7 @@ export function ShaftApp() {
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || "Não foi possível salvar no Notion.");
-    await refresh();
+    await refresh("refresh");
     return data;
   }
 
@@ -93,13 +77,13 @@ export function ShaftApp() {
           <a className="notion-link" href="https://app.notion.com/p/3b2f65ea97b0804b86befa78f9f63139" target="_blank" rel="noreferrer" aria-label="Abrir painel no Notion">N</a>
         </header>
 
-        <div className="sync-note"><span /> Notion conectado <b>{live ? "Leitura e escrita ativas" : `Leitura de ${notion.syncedAt}`}</b></div>
+        <SyncNote status={syncStatus} syncedAt={notion?.syncedAt} retrying={retrying} onRetry={() => refresh("retry")} />
         {notice && <div className="toast" role="status">✓ {notice}</div>}
 
-        {tab === "hoje" && <Today notion={notion} onCheckin={() => setSheet("checkin")} />}
-        {tab === "diario" && <Diary notion={notion} onCheckin={() => setSheet("checkin")} />}
-        {tab === "treinos" && <Training notion={notion} onConfirm={() => setSheet("training")} />}
-        {tab === "financas" && <Finance notion={notion} onAction={setSheet} />}
+        {tab === "hoje" && <Today notion={notion} syncStatus={syncStatus} onCheckin={() => setSheet("checkin")} />}
+        {tab === "diario" && <Diary notion={notion} syncStatus={syncStatus} onCheckin={() => setSheet("checkin")} />}
+        {tab === "treinos" && <Training notion={notion} syncStatus={syncStatus} onConfirm={() => setSheet("training")} />}
+        {tab === "financas" && <Finance notion={notion} syncStatus={syncStatus} onAction={setSheet} />}
 
         <nav className="bottom-nav" aria-label="Navegação principal">
           {nav.map(([id, label, icon]) => <button key={id} className={tab === id ? "active" : ""} onClick={() => setTab(id)}><span>{icon}</span>{label}</button>)}
@@ -110,7 +94,7 @@ export function ShaftApp() {
         const data = await save("/api/notion/checkins", payload);
         success(data.leveledUp ? `+${data.xpDay} XP · você subiu para o nível ${data.level}!` : `Check-in salvo · +${data.xpDay} XP`);
       }} />}
-      {sheet === "training" && <TrainingSheet exercises={notion.exercises} onClose={() => setSheet(null)} onSave={async (payload) => {
+      {sheet === "training" && trainingExercises.length > 0 && <TrainingSheet exercises={trainingExercises} onClose={() => setSheet(null)} onSave={async (payload) => {
         const data = await save("/api/notion/training", payload);
         success(`Treino e ${data.saved} cargas salvos`);
       }} />}
@@ -122,11 +106,26 @@ export function ShaftApp() {
   );
 }
 
-function Today({ notion, onCheckin }: { notion: DashboardData; onCheckin: () => void }) {
+function SyncNote({ status, syncedAt, retrying, onRetry }: { status: SyncStatus; syncedAt?: string; retrying: boolean; onRetry: () => void }) {
+  const title = status === "available" ? "Notion conectado" : status === "loading" ? "Consultando o Notion" : "Notion indisponível";
+  const detail = status === "available" ? `Leitura e escrita ativas · ${syncedAt}` : status === "loading" ? "Carregando seus dados…" : "Não foi possível carregar seus dados.";
+  const showRetry = shouldShowRetryAction({ syncStatus: status, retrying });
+  return <div className={`sync-note ${status}`} role="status" aria-live="polite"><span aria-hidden="true" /><div><strong>{title}</strong><small>{detail}</small></div>{showRetry && <button type="button" aria-disabled={retrying} onClick={() => { if (!retrying) onRetry(); }}>{retrying ? "Tentando novamente…" : "Tentar novamente"}</button>}</div>;
+}
+
+function unavailableLabel(status: SyncStatus) {
+  return status === "loading" ? "Carregando…" : "Indisponível";
+}
+
+function EmptyData({ status, message }: { status: SyncStatus; message: string }) {
+  return <div className="empty-data"><strong>{unavailableLabel(status)}</strong><p>{status === "loading" ? "Consultando o Notion." : message}</p></div>;
+}
+
+function Today({ notion, syncStatus, onCheckin }: { notion: DashboardData | null; syncStatus: SyncStatus; onCheckin: () => void }) {
   return <section className="page-content">
     <div className="date-row"><span>Quarta, 5 de agosto</span><span className="pill">Dia de trabalho</span></div>
-    <article className="hero-card"><div className="hero-top"><span className="eyebrow light">SEU RITMO HOJE</span><span>{notion.level}</span></div><h2>O eixo é voltar,<br />não acertar tudo.</h2><div className="level-row"><div><strong>Nível {notion.level}</strong><span>{notion.xp} de {notion.nextLevel} XP</span></div><div className="progress"><i style={{ width: `${Math.max(2, (notion.xp % 200) / 2)}%` }} /></div></div></article>
-    <div className="section-heading"><div><p className="eyebrow">FOCO DE HOJE</p><h2>Três coisas bastam</h2></div><span className="tiny-label">{notion.week}</span></div>
+    <article className="hero-card"><div className="hero-top"><span className="eyebrow light">SEU RITMO HOJE</span><span>{notion?.level ?? "—"}</span></div><h2>O eixo é voltar,<br />não acertar tudo.</h2>{notion ? <div className="level-row"><div><strong>Nível {notion.level}</strong><span>{notion.xp} de {notion.nextLevel} XP</span></div><div className="progress"><i style={{ width: `${Math.max(2, (notion.xp % 200) / 2)}%` }} /></div></div> : <div className="level-unavailable"><strong>Progresso {unavailableLabel(syncStatus).toLowerCase()}</strong><span>O XP aparecerá quando o Notion responder.</span></div>}</article>
+    <div className="section-heading"><div><p className="eyebrow">FOCO DE HOJE</p><h2>Três coisas bastam</h2></div><span className="tiny-label">{notion?.week ?? unavailableLabel(syncStatus)}</span></div>
     <div className="focus-list">
       <Focus icon="☾" title="Sono" text="Desacelerar às 23h15" tag="Meta 00h30" />
       <Focus icon="▶" title="Audiobook na ida" text="5–15 minutos na Linha Vermelha" tag="Mínimo vale" />
@@ -141,29 +140,31 @@ function Focus({ icon, title, text, tag }: { icon: string; title: string; text: 
   return <article className="focus-item"><span className="focus-icon">{icon}</span><div><strong>{title}</strong><p>{text}</p></div><span className="mini-tag">{tag}</span></article>;
 }
 
-function Diary({ notion, onCheckin }: { notion: DashboardData; onCheckin: () => void }) {
+function Diary({ notion, syncStatus, onCheckin }: { notion: DashboardData | null; syncStatus: SyncStatus; onCheckin: () => void }) {
   return <section className="page-content">
     <div className="intro-block"><p className="eyebrow">UM PASSO DE CADA VEZ</p><h2>Uma conversa,<br />não uma prova.</h2><p>Responda somente o que fizer sentido hoje. A versão mínima sempre vale.</p></div>
     <button className="big-voice" onClick={onCheckin}><span>●</span><strong>Começar check-in</strong><small>Nenhum áudio ou transcrição completa será salvo</small></button>
-    <div className="section-heading"><div><p className="eyebrow">ÚLTIMO CHECK-IN · NOTION</p><h2>{notion.checkin.date}</h2></div><span className="pill neutral">{notion.checkin.mood} · energia {notion.checkin.energy}</span></div>
-    <article className="quote-card"><p>“{notion.checkin.win}”</p><span>Vitória do dia</span></article>
-    <div className="two-grid"><Metric label="XP total" value={String(notion.xp)} note={`${notion.nextLevel - notion.xp} para o próximo nível`} /><Metric label="Regra" value="0−" note="XP nunca diminui" /></div>
+    <div className="section-heading"><div><p className="eyebrow">ÚLTIMO CHECK-IN · NOTION</p><h2>{notion?.checkin.date ?? unavailableLabel(syncStatus)}</h2></div>{notion && <span className="pill neutral">{notion.checkin.mood} · energia {notion.checkin.energy}</span>}</div>
+    {notion ? <article className="quote-card"><p>“{notion.checkin.win}”</p><span>Vitória do dia</span></article> : <EmptyData status={syncStatus} message="O último check-in não pôde ser carregado." />}
+    <div className="two-grid">{notion ? <Metric label="XP total" value={String(notion.xp)} note={`${notion.nextLevel - notion.xp} para o próximo nível`} /> : <Metric label="XP total" value="—" note={syncStatus === "loading" ? "Carregando do Notion" : "Dados indisponíveis"} />}<Metric label="Regra" value="0−" note="XP nunca diminui" /></div>
   </section>;
 }
 
-function Training({ notion, onConfirm }: { notion: DashboardData; onConfirm: () => void }) {
+function Training({ notion, syncStatus, onConfirm }: { notion: DashboardData | null; syncStatus: SyncStatus; onConfirm: () => void }) {
+  const exercises = getValidExercises(notion?.exercises);
+  const hasExercises = exercises.length > 0;
   return <section className="page-content">
     <div className="cycle"><span className="done">Peito<br />Tríceps</span><i /><span className="current">Costas<br />Bíceps</span><i /><span>Perna<br />Ombro</span></div>
     <article className="next-card"><p className="eyebrow light">PRÓXIMO NO CICLO</p><h2>Costas + Bíceps</h2><p>Depois de um dia de descanso · abdominal incluído</p><button>Adicionar exercícios quando eu lembrar</button></article>
     <div className="section-heading"><div><p className="eyebrow">SESSÃO PLANEJADA · NOTION</p><h2>Peito + Tríceps</h2></div><span className="pill">Aguardando</span></div>
-    <div className="exercise-list">{notion.exercises.map(([name, load, group], index) => <article key={name}><span>{index + 1}</span><div><strong>{name}</strong><small>{group}</small></div><b>{load}</b></article>)}</div>
-    <button className="secondary-button" onClick={onConfirm}>Confirmar treino e cargas</button>
+    {hasExercises ? <div className="exercise-list">{exercises.map(({ name, loadLabel, group }, index) => <article key={name}><span>{index + 1}</span><div><strong>{name}</strong><small>{group}</small></div><b>{loadLabel}</b></article>)}</div> : <EmptyData status={syncStatus} message={notion ? "Nenhum exercício ativo foi encontrado." : "Os exercícios não puderam ser carregados."} />}
+    <button className="secondary-button" onClick={onConfirm} disabled={!hasExercises}>{hasExercises ? "Confirmar treino e cargas" : notion ? "Sem exercícios para confirmar" : "Treino indisponível"}</button>
   </section>;
 }
 
-function Finance({ notion, onAction }: { notion: DashboardData; onAction: (sheet: Sheet) => void }) {
+function Finance({ notion, syncStatus, onAction }: { notion: DashboardData | null; syncStatus: SyncStatus; onAction: (sheet: Sheet) => void }) {
   return <section className="page-content">
-    <article className="balance-card"><div><p className="eyebrow light">SALDO NO NOTION</p><h2>{notion.balance}</h2><span>Compras planejadas não reduzem este saldo</span></div><span className="trend">↗</span></article>
+    <article className="balance-card"><div><p className="eyebrow light">SALDO NO NOTION</p><h2>{notion?.balance ?? "—"}</h2><span>{notion ? "Compras planejadas não reduzem este saldo" : syncStatus === "loading" ? "Carregando saldo…" : "Saldo indisponível no momento"}</span></div><span className="trend">{notion ? "↗" : "—"}</span></article>
     <div className="quick-actions"><button onClick={() => onAction("expense")}><span>−</span>Registrar gasto</button><button onClick={() => onAction("income")}><span>＋</span>Registrar entrada</button><button onClick={() => onAction("planned")}><span>◇</span>Planejar compra</button></div>
     <div className="section-heading"><div><p className="eyebrow">PRÓXIMAS ENTRADAS</p><h2>Salários</h2></div><span className="tiny-label">Valores variáveis</span></div>
     <article className="salary-card"><span className="calendar-icon">15</span><div><strong>Próximo pagamento habitual</strong><p>Holerite pode ser informado até um dia antes</p></div><b>›</b></article>
@@ -212,17 +213,21 @@ function FinanceSheet({ mode, onClose, onSave }: { mode: "expense" | "income" | 
   </form></SheetFrame>;
 }
 
-function TrainingSheet({ exercises, onClose, onSave }: { exercises: string[][]; onClose: () => void; onSave: (payload: unknown) => Promise<void> }) {
-  const [items, setItems] = useState(exercises.map(([name, load, group]) => ({ name, load: parseFloat(load) || 0, group, completed: true, increase: false })));
+function TrainingSheet({ exercises, onClose, onSave }: { exercises: ExerciseRow[]; onClose: () => void; onSave: (payload: unknown) => Promise<void> }) {
+  const [items, setItems] = useState(() => createTrainingFormItems(exercises));
   const [saving, setSaving] = useState(false); const [error, setError] = useState("");
+  const formValid = isTrainingFormValid(items);
   async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault(); setSaving(true); setError(""); const form = new FormData(event.currentTarget);
-    try { await onSave({ exercises: items, status: form.get("status"), duration: form.get("duration"), energy: form.get("energy"), summary: form.get("summary") }); } catch (cause) { setError(cause instanceof Error ? cause.message : "Falha ao salvar."); setSaving(false); }
+    event.preventDefault(); setError("");
+    const exercisePayload = buildTrainingExercisePayload(items);
+    if (!exercisePayload) { setError("Revise as cargas antes de salvar o treino."); return; }
+    setSaving(true); const form = new FormData(event.currentTarget);
+    try { await onSave({ exercises: exercisePayload, status: form.get("status"), duration: form.get("duration"), energy: form.get("energy"), summary: form.get("summary") }); } catch (cause) { setError(cause instanceof Error ? cause.message : "Falha ao salvar."); setSaving(false); }
   }
   return <SheetFrame title="Confirmar treino" eyebrow="CARGAS · NOTION" onClose={onClose}><form className="shaft-form" onSubmit={submit}>
-    <div className="training-edit-list">{items.map((item, index) => <article key={item.name}><div><strong>{item.name}</strong><small>{item.group}</small></div><label><span>Carga</span><input type="number" min="0" step="0.5" value={item.load} onChange={(event) => setItems((current) => current.map((row, i) => i === index ? { ...row, load: Number(event.target.value) } : row))} /></label><label className="check-row"><input type="checkbox" checked={item.completed} onChange={(event) => setItems((current) => current.map((row, i) => i === index ? { ...row, completed: event.target.checked } : row))} />Feito</label><label className="check-row"><input type="checkbox" checked={item.increase} onChange={(event) => setItems((current) => current.map((row, i) => i === index ? { ...row, increase: event.target.checked } : row))} />+5 kg próxima</label></article>)}</div>
+    <div className="training-edit-list">{items.map((item, index) => <article key={item.name}><div><strong>{item.name}</strong><small>{item.group}</small></div>{item.loadKind === "bodyweight" ? <div className="bodyweight-load"><span>Carga</span><strong>Peso corporal</strong></div> : <label><span>Carga</span><input type="number" min="0" step="0.5" value={item.loadInput} aria-invalid={parseEditableLoad(item.loadInput) === null} onChange={(event) => setItems((current) => updateTrainingFormLoad(current, index, event.target.value))} /></label>}<label className="check-row"><input type="checkbox" checked={item.completed} onChange={(event) => setItems((current) => current.map((row, i) => i === index ? { ...row, completed: event.target.checked } : row))} />Feito</label>{item.loadKind === "weight" ? <label className="check-row"><input type="checkbox" checked={item.increase} onChange={(event) => setItems((current) => current.map((row, i) => i === index ? { ...row, increase: event.target.checked } : row))} />+5 kg próxima</label> : <span className="bodyweight-note">Sem carga externa</span>}</article>)}</div>
     <div className="form-grid"><Select label="Resultado" name="status" options={["Completo", "Mínimo"]} /><Field label="Duração · min" name="duration" type="number" min="1" defaultValue="60" /><Field label="Energia · 1 a 10" name="energy" type="number" min="1" max="10" defaultValue="6" /></div><TextArea label="Resumo opcional" name="summary" placeholder="Como o treino pareceu?" />
-    <p className="form-note">Marcar +5 kg cria uma sugestão para a próxima sessão; não altera a carga atual.</p>{error && <p className="form-error">{error}</p>}<button className="primary-button" disabled={saving}>{saving ? "Salvando…" : "Salvar treino"}</button>
+    <p className="form-note">Marcar +5 kg cria uma sugestão para a próxima sessão; não altera a carga atual.</p>{error && <p className="form-error">{error}</p>}<button className="primary-button" disabled={saving || !formValid}>{saving ? "Salvando…" : "Salvar treino"}</button>
   </form></SheetFrame>;
 }
 
