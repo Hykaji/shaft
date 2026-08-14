@@ -1,4 +1,5 @@
 import { apiError, createPage, getNumber, property, query, SOURCES } from "../../../lib/notion";
+import { authorizeShaftApiRequest } from "../../../chatgpt-auth";
 
 const statuses = ["Completo", "Mínimo", "Não feito", "Não planejado"];
 const moods = ["Ótimo", "Bom", "Neutro", "Ruim", "Muito ruim"];
@@ -17,6 +18,9 @@ function score(status: string, minimum: number, complete: number) {
 }
 
 export async function POST(request: Request) {
+  const accessError = await authorizeShaftApiRequest(request);
+  if (accessError) return accessError;
+
   try {
     const body = await request.json() as Record<string, unknown>;
     const date = /^\d{4}-\d{2}-\d{2}$/.test(String(body.date)) ? String(body.date) : today();

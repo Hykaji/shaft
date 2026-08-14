@@ -18,6 +18,8 @@ scrollback.
   complete, approved, and committed locally.
 - [`mission-02-central-command-level-1`](missions/mission-02-central-command-level-1/README.md):
   accepted after Reviewer approval; local commit authorized.
+- [`mission-03-notion-route-protection`](missions/mission-03-notion-route-protection/README.md):
+  accepted after independent review; local commit authorized.
 
 ## Rules
 

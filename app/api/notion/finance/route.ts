@@ -1,4 +1,5 @@
 import { apiError, createPage, property, SOURCES } from "../../../lib/notion";
+import { authorizeShaftApiRequest } from "../../../chatgpt-auth";
 
 const types = ["Entrada", "Saída", "Economia", "Transferência"];
 const categories = ["Salário", "Moradia", "Alimentação", "Transporte", "Saúde", "Estudos", "Lazer e social", "Assinaturas", "Compras", "Outros"];
@@ -10,6 +11,9 @@ function today() {
 }
 
 export async function POST(request: Request) {
+  const accessError = await authorizeShaftApiRequest(request);
+  if (accessError) return accessError;
+
   try {
     const body = await request.json() as Record<string, unknown>;
     const type = types.includes(String(body.type)) ? String(body.type) : "Saída";

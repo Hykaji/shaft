@@ -1,11 +1,15 @@
 import { apiError, getCheckbox, getNumber, getSelect, getText, getTitle, query, SOURCES } from "../../../lib/notion";
 import type { NotionPage } from "../../../lib/notion";
+import { authorizeShaftApiRequest } from "../../../chatgpt-auth";
 
 function getDate(page: NotionPage, name: string) {
   return ((page.properties[name]?.date as { start?: string } | null)?.start) ?? "";
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const accessError = await authorizeShaftApiRequest(request);
+  if (accessError) return accessError;
+
   try {
     const [checkins, weeks, finances, exercises] = await Promise.all([
       query(SOURCES.checkins, { page_size: 1, sorts: [{ timestamp: "created_time", direction: "descending" }] }),

@@ -87,6 +87,25 @@ or enforce explicit server-side membership or allowlist checks.
 Use SIWC for account pages, user-specific dashboards, saved records, and write
 actions tied to the current ChatGPT user. Leave public content anonymous.
 
+## Shaft Notion Route Access
+
+Every route under `app/api/notion/` requires both an authenticated ChatGPT user
+provided by Sites and a match in the Shaft owner allowlist. Configure at least
+one server-side environment value:
+
+- `SHAFT_ALLOWED_USER_IDS`: comma-separated stable user IDs for this Site;
+- `SHAFT_ALLOWED_USER_EMAILS`: comma-separated owner emails, matched without
+  case sensitivity.
+
+User IDs are preferred. Email matching is available as a practical fallback.
+If neither list is configured, the routes fail closed without contacting
+Notion. Anonymous and non-owner requests are also rejected before request-body
+parsing or Notion access.
+
+Local development remains available only when the runtime is not production
+and the request URL uses `localhost`, `127.0.0.1`, or `::1`. Hosted environment
+values are managed through Sites; do not commit personal values or secrets.
+
 ## Useful Commands
 
 - `npm run dev`: start local development
