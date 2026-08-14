@@ -1,8 +1,8 @@
 # Revisão final dos ajustes do fallback do Notion
 
 **Data:** 12 de agosto de 2026  
-**Resultado revisado:** `docs/agent-reports/resultado-ajustes-review-fallback-notion.md`  
-**Revisão anterior:** `docs/agent-reports/review-correcao-fallback-notion.md`  
+**Resultado revisado:** `docs/agent-reports/missions/mission-01-notion-fallback/resultado-ajustes-review-fallback-notion.md`  
+**Revisão anterior:** `docs/agent-reports/missions/mission-01-notion-fallback/review-correcao-fallback-notion.md`  
 **Tipo de revisão:** somente leitura; nenhuma correção aplicada  
 **Parecer final:** **requer novos ajustes**
 

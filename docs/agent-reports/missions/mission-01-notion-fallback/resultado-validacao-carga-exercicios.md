@@ -1,7 +1,7 @@
 # Resultado da validação de carga dos exercícios
 
 **Data:** 12 de agosto de 2026  
-**Revisão de origem:** `docs/agent-reports/review-final-fallback-notion.md`  
+**Revisão de origem:** `docs/agent-reports/missions/mission-01-notion-fallback/review-final-fallback-notion.md`  
 **Status:** bloqueador corrigido e validado localmente  
 **Publicação:** não realizada
 

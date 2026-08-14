@@ -1,7 +1,7 @@
 # Resultado da correção do fallback do Notion
 
 **Data:** 12 de agosto de 2026  
-**Plano de origem:** `docs/agent-reports/plano-fallback-notion.md`  
+**Plano de origem:** `docs/agent-reports/missions/mission-01-notion-fallback/plano-fallback-notion.md`  
 **Status:** implementação concluída e validada localmente  
 **Publicação:** não realizada  
 **Escopo:** somente o estado do dashboard quando o Notion está carregando, disponível ou indisponível
@@ -79,7 +79,7 @@ Foi incluído o teste `keeps unavailable Notion data honest and retryable`, que 
 
 Este relatório foi criado em:
 
-- `docs/agent-reports/resultado-correcao-fallback-notion.md`.
+- `docs/agent-reports/missions/mission-01-notion-fallback/resultado-correcao-fallback-notion.md`.
 
 Os relatórios anteriores em `docs/agent-reports/` e o `AGENTS.md` não foram modificados nesta etapa.
 

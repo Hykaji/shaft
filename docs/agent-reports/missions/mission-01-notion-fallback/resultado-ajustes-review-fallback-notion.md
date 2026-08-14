@@ -1,7 +1,7 @@
 # Resultado dos ajustes da revisão do fallback do Notion
 
 **Data:** 12 de agosto de 2026  
-**Revisão de origem:** `docs/agent-reports/review-correcao-fallback-notion.md`  
+**Revisão de origem:** `docs/agent-reports/missions/mission-01-notion-fallback/review-correcao-fallback-notion.md`  
 **Status:** ajustes concluídos e validados localmente  
 **Publicação:** não realizada
 

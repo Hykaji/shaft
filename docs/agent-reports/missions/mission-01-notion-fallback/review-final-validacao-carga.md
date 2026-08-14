@@ -1,7 +1,7 @@
 # Revisão final da validação de carga
 
 **Data:** 12 de agosto de 2026  
-**Documento revisado:** `docs/agent-reports/resultado-validacao-carga-exercicios.md`  
+**Documento revisado:** `docs/agent-reports/missions/mission-01-notion-fallback/resultado-validacao-carga-exercicios.md`  
 **Revisão:** somente leitura; nenhum arquivo de implementação alterado  
 **Parecer final:** **requer novos ajustes**
 

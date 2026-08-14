@@ -77,3 +77,36 @@ For major changes involving:
 - Large refactors
 
 Explain the change first and wait for approval before proceeding.
+
+## Agent orchestration
+
+`AGENTS.md` is the constitution for all coding agents working on Shaft. The
+detailed Level 1 workflow is defined in `docs/agent-workflow.md`.
+
+The standard roles are:
+
+- **Human direction (user + ChatGPT):** defines priorities, approves scope and
+  important decisions, and gives final acceptance.
+- **Builder:** investigates, proposes a plan, implements only the approved
+  scope, validates the result, and writes a complete handoff report.
+- **Reviewer:** starts read-only, independently reviews the implementation and
+  Builder report, classifies findings, and issues a verdict.
+
+For every mission, agents must:
+
+1. Read this file, `docs/agent-workflow.md`, and the relevant mission folder.
+2. Store plans, implementation reports, reviews, and final decisions together
+   under `docs/agent-reports/missions/<mission-id>/`.
+3. Use the templates in `docs/agent-reports/templates/` for new reports.
+4. Keep reports chronological and link each handoff to the document it reviews
+   or supersedes.
+5. Preserve the distinction between observed evidence, assumptions, risks, and
+   human decisions.
+
+The normal handoff is Builder -> Reviewer -> human direction. If the Reviewer
+requests changes, the work returns to the Builder and is reviewed again.
+
+Do not auto-merge. Do not commit, merge, push, or publish a mission as complete
+until the Reviewer has approved it and human direction has given final
+acceptance. A local checkpoint commit may be made only when explicitly
+authorized and must not be represented as final acceptance.

@@ -920,7 +920,7 @@ Antes da criação deste relatório:
 - único arquivo não rastreado: `AGENTS.md`;
 - `.env.local`, `dist`, `.next`, `node_modules`, `.pnpm-store` e `work` não estavam rastreados.
 
-Após esta entrega, espera-se também que `docs/agent-reports/auditoria-inicial.md` apareça como novo arquivo não rastreado até que seja incluído em um commit futuro.
+Após esta entrega, espera-se também que `docs/agent-reports/missions/mission-01-notion-fallback/auditoria-inicial.md` apareça como novo arquivo não rastreado até que seja incluído em um commit futuro.
 
 ## 16. Observações finais
 

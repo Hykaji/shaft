@@ -18,7 +18,7 @@ Os dois pontos restantes da revisão foram corrigidos sem alterar backend, integ
 - `app/lib/dashboard-state.ts`: preserva o tipo da carga (`weight` ou `bodyweight`) e concentra as funções puras usadas para criar, atualizar, validar e converter os itens do formulário.
 - `app/globals.css`: estilos mínimos para a apresentação de Peso corporal no formulário.
 - `tests/rendered-html.test.mjs`: atualiza as expectativas do tipo de carga e adiciona cobertura para campo apagado, texto inválido, carga válida, zero real e Peso corporal.
-- `docs/agent-reports/resultado-ajuste-final-carga.md`: este relatório.
+- `docs/agent-reports/missions/mission-01-notion-fallback/resultado-ajuste-final-carga.md`: este relatório.
 
 ## Validações executadas
 
