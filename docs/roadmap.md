@@ -51,6 +51,29 @@ A versão 1.0 exige, no mínimo:
    estabilização.
 6. Ampliação dos testes das regras críticas - evolução contínua.
 
+## Direção aprovada: D1 como núcleo de dados
+
+O Shaft adotará gradualmente o D1 como fonte canônica dos dados centrais. A
+migração começa por check-ins e XP, onde unicidade, concorrência e ordem lógica
+exigem garantias transacionais que o Notion não oferece no fluxo atual.
+
+O Notion ficará fora do caminho crítico dos domínios migrados. Durante cada
+transição ele poderá permanecer como fonte legada somente leitura; depois do
+corte, poderá servir opcionalmente para consultas humanas, relatórios ou
+exportações assíncronas. Essas operações não serão condição para confirmar uma
+escrita no Shaft.
+
+A evolução será dividida em missões independentes:
+
+1. check-ins e XP;
+2. finanças;
+3. treinos e cargas;
+4. demais dados centrais que demonstrarem benefício real.
+
+Cada domínio exige auditoria, importação, reconciliação, backup e corte
+verificados antes de abandonar sua fonte legada. Não haverá migração total em
+uma única etapa nem exclusão automática de dados do Notion.
+
 ## Adição futura: integração financeira automática
 
 **Status:** ideia registrada; ainda não planejada nem aprovada para
@@ -92,3 +115,7 @@ Esta ideia não altera a Missão 4. Enquanto o Notion for a fonte financeira
 ativa, a paginação completa continua necessária para evitar saldo parcial. A
 integração automática deverá ser tratada futuramente como missão própria, com
 investigação, plano, aprovação humana, Builder, Reviewer e migração segura.
+
+A migração interna das finanças do Notion para o D1 pertence à direção de
+arquitetura de dados e também exigirá missão própria. Ela é independente de uma
+futura conexão bancária por OFX, CSV, aplicativo intermediário ou Open Finance.

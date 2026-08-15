@@ -1,5 +1,9 @@
 import { apiError, createPage, getNumber, property, query, SOURCES } from "../../../lib/notion";
 import { authorizeShaftApiRequest } from "../../../chatgpt-auth";
+import { createCheckinService, CheckinConflictError } from "../../../lib/checkin-service";
+import { isD1CheckinStore, resolveAuthorizedCheckinOwner } from "../../../lib/checkin-identity";
+import { createD1CheckinLedger } from "../../../../db/checkins";
+import { getD1Binding } from "../../../../db";
 
 const statuses = ["Completo", "Mínimo", "Não feito", "Não planejado"];
 const moods = ["Ótimo", "Bom", "Neutro", "Ruim", "Muito ruim"];
@@ -21,6 +25,36 @@ export async function POST(request: Request) {
   const accessError = await authorizeShaftApiRequest(request);
   if (accessError) return accessError;
 
+  if (isD1CheckinStore()) return postD1Checkin(request);
+  return postNotionCheckin(request);
+}
+
+async function postD1Checkin(request: Request) {
+  try {
+    const ownerKey = resolveAuthorizedCheckinOwner(request);
+    const body = await request.json() as Record<string, unknown>;
+    const service = createCheckinService(createD1CheckinLedger(await getD1Binding()));
+    return Response.json(await service.save(ownerKey, body), {
+      headers: { "Cache-Control": "private, no-store" },
+    });
+  } catch (error) {
+    if (error instanceof CheckinConflictError) {
+      return Response.json({ error: error.message }, {
+        status: 409,
+        headers: { "Cache-Control": "private, no-store" },
+      });
+    }
+    return Response.json(
+      { error: "Check-ins e XP estão indisponíveis no momento." },
+      {
+        status: 503,
+        headers: { "Cache-Control": "private, no-store" },
+      },
+    );
+  }
+}
+
+async function postNotionCheckin(request: Request) {
   try {
     const body = await request.json() as Record<string, unknown>;
     const date = /^\d{4}-\d{2}-\d{2}$/.test(String(body.date)) ? String(body.date) : today();

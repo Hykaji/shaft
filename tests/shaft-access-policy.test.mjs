@@ -1,10 +1,23 @@
 import assert from "node:assert/strict";
+import { registerHooks } from "node:module";
 import test from "node:test";
 import {
   decideShaftAccess,
   isLocalDevelopmentRequest,
   parseAccessList,
 } from "../app/lib/shaft-access-policy.ts";
+
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (specifier === "cloudflare:workers") {
+      return {
+        shortCircuit: true,
+        url: "data:text/javascript,export const env = {};",
+      };
+    }
+    return nextResolve(specifier, context);
+  },
+});
 
 const owner = {
   userId: "user-owner",
@@ -123,6 +136,68 @@ test("rejects anonymous requests on every Notion route before processing", async
       error: "Autenticação necessária.",
     });
     assert.match(response.headers.get("cache-control") ?? "", /no-store/);
+  }
+});
+
+test("keeps the Mission 3 guard ahead of D1 and fails closed without its binding", async () => {
+  const previousStore = process.env.SHAFT_CHECKIN_STORE;
+  const previousIds = process.env.SHAFT_ALLOWED_USER_IDS;
+  const previousFetch = globalThis.fetch;
+  let remoteFetches = 0;
+
+  try {
+    process.env.SHAFT_CHECKIN_STORE = "d1";
+    process.env.SHAFT_ALLOWED_USER_IDS = "user-owner";
+    globalThis.fetch = async () => {
+      remoteFetches += 1;
+      throw new Error("Unexpected remote network access");
+    };
+    const worker = await loadWorker();
+    const executionContext = {
+      waitUntil() {},
+      passThroughOnException() {},
+    };
+    const assets = {
+      ASSETS: {
+        fetch: async () => new Response("Not found", { status: 404 }),
+      },
+    };
+
+    const anonymous = await worker.fetch(
+      new Request("https://shaft.example/api/notion/checkins", {
+        method: "POST",
+      }),
+      assets,
+      executionContext,
+    );
+    assert.equal(anonymous.status, 401);
+
+    const unavailable = await worker.fetch(
+      new Request("https://shaft.example/api/notion/checkins", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "oai-authenticated-user-id": "user-owner",
+          "oai-authenticated-user-email": "owner@example.com",
+        },
+        body: JSON.stringify({ date: "2026-08-15" }),
+      }),
+      assets,
+      executionContext,
+    );
+    const body = await unavailable.json();
+    assert.equal(unavailable.status, 503);
+    assert.deepEqual(body, {
+      error: "Check-ins e XP estão indisponíveis no momento.",
+    });
+    assert.equal(Object.hasOwn(body, "xpTotal"), false);
+    assert.equal(remoteFetches, 0);
+  } finally {
+    globalThis.fetch = previousFetch;
+    if (previousStore === undefined) delete process.env.SHAFT_CHECKIN_STORE;
+    else process.env.SHAFT_CHECKIN_STORE = previousStore;
+    if (previousIds === undefined) delete process.env.SHAFT_ALLOWED_USER_IDS;
+    else process.env.SHAFT_ALLOWED_USER_IDS = previousIds;
   }
 });
 

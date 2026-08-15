@@ -92,7 +92,7 @@ export function ShaftApp() {
 
       {sheet === "checkin" && <CheckinSheet onClose={() => setSheet(null)} onSave={async (payload) => {
         const data = await save("/api/notion/checkins", payload);
-        success(data.leveledUp ? `+${data.xpDay} XP · você subiu para o nível ${data.level}!` : `Check-in salvo · +${data.xpDay} XP`);
+        success(data.replayed ? "Check-in já salvo · XP mantido" : data.leveledUp ? `+${data.xpDay} XP · você subiu para o nível ${data.level}!` : `Check-in salvo · +${data.xpDay} XP`);
       }} />}
       {sheet === "training" && trainingExercises.length > 0 && <TrainingSheet exercises={trainingExercises} onClose={() => setSheet(null)} onSave={async (payload) => {
         const data = await save("/api/notion/training", payload);
