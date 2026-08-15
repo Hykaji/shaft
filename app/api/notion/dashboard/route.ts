@@ -1,4 +1,4 @@
-import { apiError, getCheckbox, getNumber, getSelect, getText, getTitle, query, SOURCES } from "../../../lib/notion";
+import { apiError, getCheckbox, getNumber, getSelect, getText, getTitle, query, queryAllPages, SOURCES } from "../../../lib/notion";
 import type { NotionPage } from "../../../lib/notion";
 import { authorizeShaftApiRequest } from "../../../chatgpt-auth";
 
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     const [checkins, weeks, finances, exercises] = await Promise.all([
       query(SOURCES.checkins, { page_size: 1, sorts: [{ timestamp: "created_time", direction: "descending" }] }),
       query(SOURCES.weeks, { page_size: 1, filter: { property: "Status", select: { equals: "Ativa" } } }),
-      query(SOURCES.finances, { page_size: 100 }),
+      queryAllPages(SOURCES.finances, { page_size: 100 }, 100),
       query(SOURCES.exercises, { page_size: 100, filter: { property: "Ativo", checkbox: { equals: true } }, sorts: [{ property: "Ordem", direction: "ascending" }] }),
     ]);
 
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     const activeWeek = weeks.results[0];
     const xp = latest ? getNumber(latest, "XP total") : 0;
     const level = Math.floor(xp / 200) + 1;
-    const balance = finances.results.reduce((total, page) => {
+    const balance = finances.reduce((total, page) => {
       if (getCheckbox(page, "Planejado")) return total;
       const value = getNumber(page, "Valor");
       const kind = getSelect(page, "Tipo");

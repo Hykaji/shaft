@@ -12,6 +12,18 @@ export const SOURCES = {
 
 export type NotionProperty = Record<string, unknown>;
 export type NotionPage = { id: string; properties: Record<string, NotionProperty> };
+export type NotionQueryResponse = {
+  results: NotionPage[];
+  has_more: boolean;
+  next_cursor: string | null;
+  request_status?: {
+    type: "complete" | "incomplete";
+    incomplete_reason?: string;
+  };
+};
+
+const MAX_QUERY_PAGES = 100;
+const PAGINATION_ERROR = "Não foi possível carregar todos os resultados do Notion.";
 
 export class NotionApiError extends Error {
   status: number;
@@ -49,10 +61,57 @@ export async function notionRequest<T>(path: string, init: RequestInit = {}, ret
 }
 
 export function query(source: string, body: Record<string, unknown>) {
-  return notionRequest<{ results: NotionPage[]; has_more: boolean }>(`/data_sources/${source}/query`, {
+  return notionRequest<NotionQueryResponse>(`/data_sources/${source}/query`, {
     method: "POST",
     body: JSON.stringify(body),
   });
+}
+
+export async function queryAllPages(
+  source: string,
+  body: Record<string, unknown>,
+  maxPages: number,
+) {
+  if (!Number.isInteger(maxPages) || maxPages < 1 || maxPages > MAX_QUERY_PAGES) {
+    throw new NotionApiError(500, "Limite de paginação do Notion inválido.");
+  }
+
+  const results: NotionPage[] = [];
+  const requestedCursors = new Set<string>();
+  let cursor = typeof body.start_cursor === "string" ? body.start_cursor : undefined;
+
+  for (let page = 0; page < maxPages; page += 1) {
+    if (cursor !== undefined) {
+      if (!cursor.trim() || requestedCursors.has(cursor)) {
+        throw new NotionApiError(502, PAGINATION_ERROR);
+      }
+      requestedCursors.add(cursor);
+    }
+
+    let response: NotionQueryResponse;
+    try {
+      response = await query(source, cursor === undefined ? { ...body } : { ...body, start_cursor: cursor });
+    } catch (error) {
+      const status = error instanceof NotionApiError ? error.status : 502;
+      throw new NotionApiError(status, PAGINATION_ERROR);
+    }
+
+    if (response.request_status?.type === "incomplete") {
+      throw new NotionApiError(502, PAGINATION_ERROR);
+    }
+
+    results.push(...response.results);
+
+    if (!response.has_more) return results;
+
+    const nextCursor = response.next_cursor;
+    if (typeof nextCursor !== "string" || !nextCursor.trim() || requestedCursors.has(nextCursor)) {
+      throw new NotionApiError(502, PAGINATION_ERROR);
+    }
+    cursor = nextCursor;
+  }
+
+  throw new NotionApiError(502, PAGINATION_ERROR);
 }
 
 export function createPage(source: string, properties: Record<string, unknown>) {

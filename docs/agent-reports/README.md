@@ -20,6 +20,9 @@ scrollback.
   accepted after Reviewer approval; local commit authorized.
 - [`mission-03-notion-route-protection`](missions/mission-03-notion-route-protection/README.md):
   accepted after independent review; local commit authorized.
+- [`mission-04-finance-pagination`](missions/mission-04-finance-pagination/README.md):
+  accepted after correction of the Reviewer's blockers and final approval;
+  local commit authorized.
 
 ## Rules
 
