@@ -1,0 +1,49 @@
+{
+  "format": "shaft-legacy-checkin-snapshot-v1",
+  "schemaVersion": 1,
+  "source": "synthetic-fixture",
+  "records": [
+    {
+      "pageId": "invalid-fields",
+      "ownerRef": "legacy-personal",
+      "createdTime": "sem-offset",
+      "lastEditedTime": "2026-08-03T10:00:00.000Z",
+      "properties": {
+        "title": 10, "date": "2026-02-30", "dayType": "Outro",
+        "mood": "Bom", "energy": 0, "sleep": "Completo",
+        "training": "Não feito", "study": "Mínimo",
+        "audiobookMinutes": -1, "dogWalked": "sim", "musicMinutes": 0,
+        "win": "A", "difficulty": "", "nextStep": "B", "summary": "C",
+        "xpDay": 18, "xpTotal": -2, "level": 0
+      }
+    },
+    {
+      "pageId": "ambiguous-dog",
+      "ownerRef": "legacy-personal",
+      "createdTime": "2026-08-04T10:00:00.000Z",
+      "lastEditedTime": "2026-08-04T10:00:00.000Z",
+      "properties": {
+        "title": "Check-in 2026-08-04", "date": "2026-08-04",
+        "dayType": "Trabalho", "mood": "Bom", "energy": 7,
+        "sleep": "Completo", "training": "Não feito", "study": "Mínimo",
+        "audiobookMinutes": 0, "dogWalked": true, "musicMinutes": 0,
+        "win": "A", "difficulty": "", "nextStep": "B", "summary": "C",
+        "xpDay": 22, "xpTotal": 22, "level": 1
+      }
+    },
+    {
+      "pageId": "xp-divergence",
+      "ownerRef": "legacy-personal",
+      "createdTime": "2026-08-05T10:00:00.000Z",
+      "lastEditedTime": "2026-08-05T10:00:00.000Z",
+      "properties": {
+        "title": "Check-in 2026-08-05", "date": "2026-08-05",
+        "dayType": "Trabalho", "mood": "Bom", "energy": 7,
+        "sleep": "Completo", "training": "Não feito", "study": "Mínimo",
+        "audiobookMinutes": 0, "dogWalked": false, "musicMinutes": 0,
+        "win": "A", "difficulty": "", "nextStep": "B", "summary": "C",
+        "xpDay": 19, "xpTotal": 19, "level": 1
+      }
+    }
+  ]
+}

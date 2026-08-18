@@ -1,0 +1,63 @@
+{
+  "format": "shaft-legacy-checkin-snapshot-v1",
+  "schemaVersion": 1,
+  "source": "synthetic-fixture",
+  "records": [
+    {
+      "pageId": "duplicate-a",
+      "ownerRef": "legacy-personal",
+      "createdTime": "2026-08-01T10:00:00.000Z",
+      "lastEditedTime": "2026-08-01T10:00:00.000Z",
+      "properties": {
+        "title": "Check-in 2026-08-01", "date": "2026-08-01",
+        "dayType": "Trabalho", "mood": "Bom", "energy": 7,
+        "sleep": "Completo", "training": "Não feito", "study": "Mínimo",
+        "audiobookMinutes": 0, "dogWalked": false, "musicMinutes": 0,
+        "win": "A", "difficulty": "", "nextStep": "B", "summary": "C",
+        "xpDay": 18, "xpTotal": 18, "level": 1
+      }
+    },
+    {
+      "pageId": "duplicate-b",
+      "ownerRef": "legacy-personal",
+      "createdTime": "2026-08-01T11:00:00.000Z",
+      "lastEditedTime": "2026-08-01T11:00:00.000Z",
+      "properties": {
+        "title": "Check-in 2026-08-01", "date": "2026-08-01",
+        "dayType": "Trabalho", "mood": "Bom", "energy": 7,
+        "sleep": "Completo", "training": "Não feito", "study": "Mínimo",
+        "audiobookMinutes": 0, "dogWalked": false, "musicMinutes": 0,
+        "win": "A", "difficulty": "", "nextStep": "B", "summary": "C",
+        "xpDay": 18, "xpTotal": 18, "level": 1
+      }
+    },
+    {
+      "pageId": "conflict-a",
+      "ownerRef": "legacy-personal",
+      "createdTime": "2026-08-02T10:00:00.000Z",
+      "lastEditedTime": "2026-08-02T10:00:00.000Z",
+      "properties": {
+        "title": "Check-in 2026-08-02", "date": "2026-08-02",
+        "dayType": "Trabalho", "mood": "Bom", "energy": 7,
+        "sleep": "Completo", "training": "Não feito", "study": "Mínimo",
+        "audiobookMinutes": 0, "dogWalked": false, "musicMinutes": 0,
+        "win": "Versão A", "difficulty": "", "nextStep": "B", "summary": "C",
+        "xpDay": 18, "xpTotal": 36, "level": 1
+      }
+    },
+    {
+      "pageId": "conflict-b",
+      "ownerRef": "legacy-personal",
+      "createdTime": "2026-08-02T11:00:00.000Z",
+      "lastEditedTime": "2026-08-02T11:00:00.000Z",
+      "properties": {
+        "title": "Check-in 2026-08-02", "date": "2026-08-02",
+        "dayType": "Trabalho", "mood": "Ruim", "energy": 3,
+        "sleep": "Completo", "training": "Não feito", "study": "Mínimo",
+        "audiobookMinutes": 0, "dogWalked": false, "musicMinutes": 0,
+        "win": "Versão B", "difficulty": "", "nextStep": "B", "summary": "C",
+        "xpDay": 18, "xpTotal": 36, "level": 1
+      }
+    }
+  ]
+}
