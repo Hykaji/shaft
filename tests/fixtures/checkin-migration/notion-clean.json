@@ -1,0 +1,85 @@
+{
+  "format": "shaft-legacy-checkin-snapshot-v1",
+  "schemaVersion": 1,
+  "source": "synthetic-fixture",
+  "records": [
+    {
+      "pageId": "page-clean-001",
+      "ownerRef": "legacy-personal",
+      "createdTime": "2026-08-10T12:00:00.000Z",
+      "lastEditedTime": "2026-08-10T12:00:00.000Z",
+      "properties": {
+        "title": "Check-in 2026-08-10",
+        "date": "2026-08-10",
+        "dayType": "Trabalho",
+        "mood": "Bom",
+        "energy": 7,
+        "sleep": "Completo",
+        "training": "Mínimo",
+        "study": "Mínimo",
+        "audiobookMinutes": 5,
+        "dogWalked": false,
+        "musicMinutes": 10,
+        "win": "Fixture limpa",
+        "difficulty": "Nenhuma",
+        "nextStep": "Continuar",
+        "summary": "Dia estável.",
+        "xpDay": 35,
+        "xpTotal": 35,
+        "level": 1
+      }
+    },
+    {
+      "pageId": "page-clean-002",
+      "ownerRef": "legacy-personal",
+      "createdTime": "2026-08-11T12:00:00.000Z",
+      "lastEditedTime": "2026-08-11T12:00:00.000Z",
+      "properties": {
+        "title": "Check-in 2026-08-11",
+        "date": "2026-08-11",
+        "dayType": "Folga",
+        "mood": "Ótimo",
+        "energy": 8,
+        "sleep": "Mínimo",
+        "training": "Não planejado",
+        "study": "Completo",
+        "audiobookMinutes": 15,
+        "dogWalked": true,
+        "musicMinutes": 0,
+        "win": "Passeio curto",
+        "difficulty": "Calor",
+        "nextStep": "Descansar",
+        "summary": "Passeio marcou o limiar menor.",
+        "xpDay": 28,
+        "xpTotal": 63,
+        "level": 1
+      }
+    },
+    {
+      "pageId": "page-clean-003",
+      "ownerRef": "legacy-personal",
+      "createdTime": "2026-08-12T12:00:00.000Z",
+      "lastEditedTime": "2026-08-12T12:00:00.000Z",
+      "properties": {
+        "title": "Check-in 2026-08-12",
+        "date": "2026-08-12",
+        "dayType": "Férias",
+        "mood": "Neutro",
+        "energy": 6,
+        "sleep": "Não feito",
+        "training": "Completo",
+        "study": "Não planejado",
+        "audiobookMinutes": 0,
+        "dogWalked": true,
+        "musicMinutes": 30,
+        "win": "Passeio longo",
+        "difficulty": "Chuva",
+        "nextStep": "Secar o tênis",
+        "summary": "Passeio marcou o limiar maior.",
+        "xpDay": 35,
+        "xpTotal": 98,
+        "level": 1
+      }
+    }
+  ]
+}

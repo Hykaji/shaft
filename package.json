@@ -9,7 +9,12 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "vinext start",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs",
+    "test": "npm run build && node --test --test-concurrency=1 tests/rendered-html.test.mjs tests/shaft-access-policy.test.mjs tests/notion-finance-pagination.test.mjs tests/checkin-idempotency.test.mjs tests/checkin-migration.test.mjs",
+    "test:checkin-idempotency": "node --test tests/checkin-idempotency.test.mjs",
+    "test:checkin-migration": "node --test tests/checkin-migration.test.mjs",
+    "checkin-migration:audit": "node scripts/checkin-migration/audit-checkins.mjs",
+    "checkin-migration:import": "node scripts/checkin-migration/import-checkins-d1.mjs",
+    "checkin-migration:reconcile": "node scripts/checkin-migration/reconcile-checkins-d1.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate"
   },

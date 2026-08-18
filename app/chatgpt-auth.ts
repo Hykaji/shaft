@@ -1,5 +1,9 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  decideShaftAccess,
+  isLocalDevelopmentRequest,
+} from "./lib/shaft-access-policy";
 
 export type ChatGPTUser = {
   userId: string;
@@ -37,6 +41,31 @@ export async function getChatGPTUser(): Promise<ChatGPTUser | null> {
     email,
     fullName,
   };
+}
+
+export async function authorizeShaftApiRequest(
+  request: Request,
+): Promise<Response | null> {
+  const allowLocalDevelopment = isLocalDevelopmentRequest(
+    request.url,
+    process.env.NODE_ENV,
+  );
+  const user = allowLocalDevelopment ? null : await getChatGPTUser();
+  const decision = decideShaftAccess({
+    user,
+    allowedUserIds: process.env.SHAFT_ALLOWED_USER_IDS,
+    allowedUserEmails: process.env.SHAFT_ALLOWED_USER_EMAILS,
+    allowLocalDevelopment,
+  });
+
+  if (decision === "allowed") return null;
+  if (decision === "unauthenticated") {
+    return accessError(401, "Autenticação necessária.");
+  }
+  if (decision === "not_configured") {
+    return accessError(503, "Acesso do Shaft ainda não configurado.");
+  }
+  return accessError(403, "Acesso não autorizado.");
 }
 
 export async function requireChatGPTUser(
@@ -87,4 +116,14 @@ function safeDecodeURIComponent(value: string): string | null {
   } catch {
     return null;
   }
+}
+
+function accessError(status: number, message: string): Response {
+  return Response.json(
+    { error: message },
+    {
+      status,
+      headers: { "Cache-Control": "private, no-store" },
+    },
+  );
 }

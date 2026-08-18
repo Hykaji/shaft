@@ -1,10 +1,14 @@
 import { apiError, getRelation, getTitle, property, query, SOURCES, updatePage } from "../../../lib/notion";
+import { authorizeShaftApiRequest } from "../../../chatgpt-auth";
 
 type ExerciseInput = { name?: string; load?: number; completed?: boolean; increase?: boolean; effort?: string };
 const efforts = ["Leve", "Adequado", "Pesado", "Muito pesado", "Não informado"];
 const statuses = ["Completo", "Mínimo"];
 
 export async function POST(request: Request) {
+  const accessError = await authorizeShaftApiRequest(request);
+  if (accessError) return accessError;
+
   try {
     const body = await request.json() as Record<string, unknown>;
     const exercises = Array.isArray(body.exercises) ? body.exercises as ExerciseInput[] : [];
