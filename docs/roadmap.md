@@ -20,7 +20,10 @@ missões; o mapa não deve virar uma lista de tarefas pequenas.
 ### Alfa - confiabilidade e estabilização
 
 É a fase atual. Busca tornar seguros e previsíveis os dados, sincronizações,
-escritas, regras pessoais e testes críticos. As Missões 1 a 4 estão concluídas.
+escritas, regras pessoais e testes críticos. As Missões 1 a 4 estão concluídas
+no fluxo atual do Notion. As Missões 5 e 6 foram concluídas e aceitas somente no
+escopo local de preparação do D1; dados reais, recurso remoto e corte continuam
+pendentes.
 
 ### Beta - sistema vivo e extensível
 
@@ -44,12 +47,39 @@ A versão 1.0 exige, no mínimo:
 ## Estabilização atual
 
 1. Fallback e validação do dashboard do Notion - concluído.
-2. Central de Comando Nível 1 - concluído.
+2. Central de Comando, protocolo original de arquivos - concluído.
 3. Proteção server-side das rotas do Notion - concluído.
 4. Paginação completa das movimentações financeiras - concluída.
-5. Idempotência do check-in e consistência do XP - futura missão de
-   estabilização.
-6. Ampliação dos testes das regras críticas - evolução contínua.
+5. Núcleo D1 local para idempotência do check-in e consistência do XP -
+   concluído e aceito localmente; ativação real pendente.
+6. Tooling local para auditoria, importação e reconciliação dos check-ins
+   legados - concluído e aceito com dados sintéticos; execução real pendente.
+7. Consolidação documental, níveis de execução e critérios da Alfa - concluída
+   e aceita na Missão 7.
+8. Ampliação e automação dos testes das regras críticas - evolução contínua.
+
+## Critérios de encerramento da Alfa
+
+A Alfa somente termina quando todos os itens abaixo estiverem comprovados no
+repositório e aceitos pela Direção:
+
+- [x] fallback, autorização e paginação das integrações atuais protegidos;
+- [x] núcleo D1 de check-ins e XP validado no ambiente local;
+- [x] tooling de migração validado com fixtures sintéticas e D1 local;
+- [x] documentação canônica e estado das missões alinhados após a Missão 7;
+- [ ] auditoria somente leitura, snapshot e backup dos check-ins reais
+  executados mediante autorização crítica específica;
+- [ ] importação, reconciliação e rollback comprovados no D1 remoto antes do
+  corte;
+- [ ] corte para D1 aprovado, executado e observado sem perda ou duplicação de
+  check-ins e XP;
+- [ ] suíte crítica automatizada para proteger integrações futuras na `main`;
+- [ ] recuperação, privacidade e comportamento do modo legado documentados e
+  verificados após o corte.
+
+O encerramento da Missão 7 não encerra automaticamente a Alfa. Ele torna os
+critérios explícitos e prepara as próximas missões técnicas, que continuam
+sujeitas às autorizações de nível crítico.
 
 ## Direção aprovada: D1 como núcleo de dados
 
@@ -119,3 +149,48 @@ investigação, plano, aprovação humana, Builder, Reviewer e migração segura
 A migração interna das finanças do Notion para o D1 pertence à direção de
 arquitetura de dados e também exigirá missão própria. Ela é independente de uma
 futura conexão bancária por OFX, CSV, aplicativo intermediário ou Open Finance.
+
+## Adição futura: Shaft Desktop com assistente integrado
+
+**Status:** ideia registrada; ainda não planejada nem aprovada para
+implementação.
+
+### Visão futura
+
+Criar uma versão desktop do Shaft para Windows, instalada no computador e
+integrada ao sistema operacional. Ela poderá oferecer abertura rápida, bandeja
+do sistema, notificações, captura de informações, arquivos locais e uma
+experiência mais contínua que a PWA no navegador.
+
+O aplicativo poderá integrar uma camada de assistência da OpenAI em dois modos
+com responsabilidades distintas:
+
+1. **Assistente do Shaft:** conversa, planejamento e uso das ferramentas do
+   próprio Shaft por meio da Responses API ou de uma arquitetura de agentes.
+2. **Modo técnico:** tarefas de desenvolvimento e manutenção do projeto por
+   meio do Codex SDK, com threads locais iniciáveis, continuáveis e retomáveis.
+
+A integração não deve pressupor acesso automático à identidade, ao histórico
+ou à memória desta conversa no ChatGPT. Contexto pessoal, memória durável,
+permissões e continuidade deverão ser projetados explicitamente pelo Shaft.
+
+### Possibilidades técnicas a avaliar
+
+- empacotar a interface atual com Electron ou Tauri, comparando consumo,
+  acesso ao Node.js, atualização e segurança;
+- manter chaves e credenciais fora da interface, em backend local protegido,
+  cofre do sistema ou serviço server-side;
+- separar claramente conversa pessoal, ferramentas do Shaft e agente técnico;
+- exigir confirmação para ações destrutivas, externas ou sensíveis;
+- permitir operação básica do aplicativo sem IA quando a conexão estiver
+  indisponível;
+- avaliar custos, privacidade, retenção, observabilidade e recuperação antes de
+  escolher modelos e recursos.
+
+### Relação com o roadmap atual
+
+Esta ideia não altera a Missão 6, a migração D1, a PWA nem a estratégia Android
+e APK da versão 1.0. O Shaft Desktop será uma trilha própria, planejada somente
+quando o núcleo de dados e as regras críticas estiverem estáveis. Uma futura
+missão deverá começar por uma prova de conceito pequena, sem acesso irrestrito
+ao computador e sem automações silenciosas.

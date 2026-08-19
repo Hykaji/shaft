@@ -1,10 +1,10 @@
 # Shaft agent workflow
 
-This document defines Level 1 of the Shaft Central Command: a shared,
-file-based protocol for human direction, Builder, and Reviewer.
+This document defines the file-based protocol of the Shaft Central Command for
+human direction, Builder, and Reviewer.
 
-It standardizes collaboration and reporting. It does not create automatic
-agents, state files, background execution, auto-merge, or deployment.
+It standardizes collaboration, risk levels, and reporting. It does not create
+automatic agents, state files, background execution, auto-merge, or deployment.
 
 ## 1. Sources of truth
 
@@ -46,27 +46,74 @@ decisions must also be recorded in the repository.
 - classifies findings and gives an explicit verdict;
 - records enough evidence for the Builder to reproduce each blocking issue.
 
-## 3. Mission lifecycle
+## 3. Execution levels
 
-1. **Direction:** human direction defines the objective and constraints.
-2. **Investigation:** Builder inspects the current system.
-3. **Plan:** Builder records the proposed files, behavior, exclusions, risks,
+Every mission is classified before implementation. Classification considers
+the worst credible impact, not only the apparent size of the diff.
+
+### Level 1 - light
+
+Use for small, reversible, low-risk changes such as documentation alignment,
+copy, isolated presentation adjustments, and maintenance that cannot alter
+security, persisted data, external systems, or critical behavior.
+
+- human direction and Builder may be the same agent;
+- plan and authorization may be recorded together when the scope is already
+  explicit;
+- the Builder performs and records a focused self-review;
+- human direction still gives final acceptance and separately authorizes Git
+  or publication actions.
+
+### Level 2 - supervised
+
+Use for medium-risk product or code changes whose failure could create a real
+regression but would not cross a critical boundary.
+
+- the Builder implements the approved scope;
+- a separate Reviewer performs an independent review;
+- findings follow the standard correction loop;
+- human direction gives final acceptance.
+
+### Level 3 - critical
+
+Use whenever work involves database or schema changes, migrations,
+authentication, security, personal or financial data, external integrations,
+deployment, publication, destructive operations, or major architecture
+changes.
+
+- human direction, Builder, and Reviewer remain separate;
+- investigation and plan precede implementation;
+- material boundaries such as real-data access, remote resource creation,
+  migration, cutover, rollback, and publication receive explicit approvals;
+- the Reviewer is always independent and cannot be replaced by self-review.
+
+When classification is uncertain, use the higher level. A mission that crosses
+a higher-risk boundary must stop that part and be reclassified before work
+continues.
+
+## 4. Mission lifecycle
+
+1. **Classification:** direction assigns the execution level and records why.
+2. **Direction:** human direction defines the objective and constraints.
+3. **Investigation:** Builder inspects the current system.
+4. **Plan:** Builder records the proposed files, behavior, exclusions, risks,
    and validation.
-4. **Approval:** human direction approves or adjusts the plan.
-5. **Implementation:** Builder changes only the approved scope.
-6. **Validation:** Builder runs the relevant lint, tests, build, and focused
+5. **Approval:** human direction approves or adjusts the plan.
+6. **Implementation:** Builder changes only the approved scope.
+7. **Validation:** Builder runs the relevant lint, tests, build, and focused
    checks.
-7. **Builder handoff:** Builder writes the result report.
-8. **Review:** Reviewer independently analyzes the work and writes a verdict.
-9. **Correction loop:** if changes are requested, the Builder corrects them and
-   the Reviewer reviews again.
-10. **Final acceptance:** after Reviewer approval, human direction decides
+8. **Builder handoff:** Builder writes the result report.
+9. **Review:** Level 1 receives a documented self-review; Levels 2 and 3 receive
+   an independent Reviewer verdict.
+10. **Correction loop:** if changes are requested, the Builder corrects them
+    and the applicable review runs again.
+11. **Final acceptance:** after the required review, human direction decides
     whether the mission is complete and whether commit, merge, push, or
     publication is authorized.
 
-No auto-merge is allowed at this level.
+No auto-merge is allowed at any level.
 
-## 4. Reviewer classifications and verdicts
+## 5. Reviewer classifications and verdicts
 
 Findings use these severities:
 
@@ -86,7 +133,7 @@ The Reviewer must finish with one verdict:
 Critical, high, and unresolved scope violations normally block approval.
 Medium or low findings must state explicitly whether they block the mission.
 
-## 5. Report organization
+## 6. Report organization
 
 All reports for the same mission stay together:
 
@@ -117,7 +164,7 @@ For new documents, prefer chronological names:
 Existing historical filenames may be preserved when moving them into a mission
 folder. Their order must then be made explicit in the mission index.
 
-## 6. Scope changes and blocked work
+## 7. Scope changes and blocked work
 
 If implementation reveals a necessary change outside the approved scope, the
 Builder must stop that part, describe the evidence and impact, and request a
@@ -127,13 +174,14 @@ If validation cannot run, the report must state what was attempted, the exact
 limitation, what remains unverified, and whether the Builder considers the
 result safe to review.
 
-## 7. Completion rule
+## 8. Completion rule
 
 A mission is complete only when:
 
 - the approved scope is implemented or explicitly waived;
 - required validation has passed or its limitation was accepted;
-- the Reviewer verdict is Approved or Approved with non-blocking observations;
+- the review required by the execution level is Approved or Approved with
+  non-blocking observations;
 - human direction records final acceptance;
 - any authorized repository or publication action has been completed and
   verified.

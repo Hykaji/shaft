@@ -23,6 +23,15 @@ scrollback.
 - [`mission-04-finance-pagination`](missions/mission-04-finance-pagination/README.md):
   accepted after correction of the Reviewer's blockers and final approval;
   local commit authorized.
+- [`mission-05-checkin-idempotency`](missions/mission-05-checkin-idempotency/README.md):
+  D1 core for check-ins and XP accepted in local scope; remote binding, real
+  data, cutover, and publication remain unauthorized.
+- [`mission-06-checkin-migration-preparation`](missions/mission-06-checkin-migration-preparation/README.md):
+  local migration tooling accepted after independent review; only synthetic
+  data and local D1 were authorized.
+- [`mission-07-alpha-skeleton-consolidation`](missions/mission-07-alpha-skeleton-consolidation/README.md):
+  documentation and execution-level alignment accepted after lightweight
+  review; repository actions remain separately controlled.
 
 ## Rules
 

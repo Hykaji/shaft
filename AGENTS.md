@@ -81,7 +81,8 @@ Explain the change first and wait for approval before proceeding.
 ## Agent orchestration
 
 `AGENTS.md` is the constitution for all coding agents working on Shaft. The
-detailed Level 1 workflow is defined in `docs/agent-workflow.md`.
+detailed file-based workflow and risk levels are defined in
+`docs/agent-workflow.md`.
 
 The standard roles are:
 
@@ -106,7 +107,23 @@ For every mission, agents must:
 The normal handoff is Builder -> Reviewer -> human direction. If the Reviewer
 requests changes, the work returns to the Builder and is reviewed again.
 
+Work is classified by risk before implementation:
+
+- **Level 1 - light:** small, reversible, low-risk work. Human direction and
+  Builder may be the same agent, with documented self-review and human final
+  acceptance.
+- **Level 2 - supervised:** medium-risk work. Builder and Reviewer must be
+  separate.
+- **Level 3 - critical:** database or schema changes, migrations,
+  authentication, security, personal or financial data, external integrations,
+  deployment, publication, destructive operations, and major architecture
+  changes. Human direction, Builder, and Reviewer remain separate, with
+  explicit approvals at each material boundary.
+
+If the risk is uncertain, use the higher level. The complete classification and
+handoff rules are defined in `docs/agent-workflow.md`.
+
 Do not auto-merge. Do not commit, merge, push, or publish a mission as complete
-until the Reviewer has approved it and human direction has given final
-acceptance. A local checkpoint commit may be made only when explicitly
-authorized and must not be represented as final acceptance.
+until the review required by its level has approved it and human direction has
+given final acceptance. A local checkpoint commit may be made only when
+explicitly authorized and must not be represented as final acceptance.
