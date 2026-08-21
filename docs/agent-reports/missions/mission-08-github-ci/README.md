@@ -2,7 +2,7 @@
 
 **Nível:** 3 - crítico
 
-**Status:** Correção local para Node 22.18.0 aceita; checkpoint pendente
+**Status:** Aprovada tecnicamente; publicação documental e merge pendentes
 
 **Implementação:** Contrato local e workflow alinhados em Node 22.18.0; build e
 57/57 testes aprovados no runtime mínimo
@@ -72,6 +72,18 @@ proteção da `main` dependem de aprovações humanas separadas.
     - aceitação humana explícita da correção local para Node `22.18.0`;
     - preservação das observações não bloqueadoras do Reviewer;
     - separação entre checkpoint, publicação, execução remota e merge.
+12. [`12-direction-remote-ci-evidence.md`](12-direction-remote-ci-evidence.md)
+    - publicação autorizada do commit `811a342` no PR 2;
+    - duas tentativas verdes no Node `22.18.0`, com 57/57 testes;
+    - inspeção dos logs, estabilidade observada e limites preservados.
+13. [`13-reviewer-review-remote-ci.md`](13-reviewer-review-remote-ci.md)
+    - revisão independente do PR, das duas tentativas e dos logs integrais;
+    - confirmação de Node `22.18.0`, 57/57 testes, estabilidade e segurança;
+    - veredito: `Approved`.
+14. [`14-direction-final-technical-acceptance.md`](14-direction-final-technical-acceptance.md)
+    - aceitação técnica final explícita da Missão 8;
+    - consolidação das evidências locais e remotas aprovadas;
+    - preservação dos gates separados de documentação, merge e proteção.
 
 ## Proveniência da investigação
 
@@ -90,6 +102,6 @@ harnesses, `pnpm-lock`, proteção da `main`, configurações do GitHub, dados,
 Notion, D1, segredos ou deploy. Também não fez commit, push, novo PR, rerun ou
 merge.
 
-O próximo passo é uma autorização humana específica para o checkpoint local da
-correção e de seus documentos. Push, repetição da execução, merge e proteção da
-`main` permanecem gates separados conforme o nível da missão.
+O próximo passo é uma autorização humana específica para publicar no PR os
+documentos 12 a 14 e o índice. Merge e proteção da `main` permanecem gates
+separados conforme o nível da missão.
