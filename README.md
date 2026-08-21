@@ -44,7 +44,8 @@ específica antes de qualquer corte.
 
 ## Requisitos
 
-- Node.js `>=22.13.0`;
+- Node.js `>=22.18.0`; essa versão mínima é necessária porque testes e tooling
+  local carregam módulos TypeScript diretamente pelo runtime;
 - variáveis locais e segredos configurados fora do repositório;
 - acesso ao Notion somente quando necessário para o modo atual.
 
