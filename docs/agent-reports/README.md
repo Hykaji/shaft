@@ -37,8 +37,8 @@ scrollback.
   tests; branch protection remained outside its scope.
 - [`mission-09-main-protection`](missions/mission-09-main-protection/README.md):
   `Protect main` active, independently approved, and integrated through PR 3;
-  post-merge CI passed, while local closing-document publication remains
-  separately gated.
+  post-merge CI passed, and closing documents are consolidated through the
+  protected publication flow in PR 4.
 
 ## Rules
 

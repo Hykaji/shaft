@@ -2,8 +2,8 @@
 
 **Nível:** 3 - crítico
 
-**Status:** objetivo técnico concluído; PR nº 3 integrado e CI pós-merge
-aprovada; documentação local de fechamento aguarda publicação separada
+**Status:** objetivo técnico concluído e documentação de fechamento
+consolidada; PR nº 4 é o veículo protegido de publicação
 
 **Implementação remota:** `Protect main` ID `21151016` ativo; PR nº 3 integrado
 no merge commit `3fb9752`; CI de push verde
@@ -116,9 +116,11 @@ Missão 8 sem impor burocracia desnecessária ao projeto pessoal.
 O ruleset `Protect main` ID `21151016` está `active`, com o campo
 `require_extra_approval_for_unattributed_changes` em `false`, bypass vazio e
 quatro regras efetivas sobre a `main`. A branch de validação permanece no
-checkpoint `ed38dc5e54173a6a2aaa1b7cac88238c055d7ce6`; o PR nº 3 está aberto,
-ready, verde, sem reviews ou aprovações e com mergeabilidade limpa. A `main`
-permanece protegida no SHA `310170674d8de6eac8b2746536470c7e51944ffc`.
+checkpoint `ed38dc5e54173a6a2aaa1b7cac88238c055d7ce6`; o PR nº 3 foi integrado
+no merge commit `3fb975207558a96a73cff393424708cfe3e9b846`, que permanece como
+SHA da `main` protegida. O PR nº 4, originado da branch
+`codex/mission-09-closing-docs`, é o veículo protegido para publicar este
+pacote documental.
 
 O documento 17 autorizou somente os Gates 1 a 3. Push, ativação, criação do PR,
 observação da CI e mudança para ready foram autorizados depois, pela Direção,
@@ -129,6 +131,7 @@ PR nº 3 foi integrado no merge commit
 aprovada na primeira tentativa com 57/57 testes. O objetivo técnico da missão
 está concluído.
 
-Staging ou commit desta documentação, push documental, novo PR, exclusão da
-branch e publicação do fechamento não estão autorizados. Nenhuma ação posterior
-deve ser inferida deste README ou dos relatórios da missão.
+A correção final destes índices foi autorizada como um único commit normal e
+push adicional no PR nº 4. A integração do PR nº 4, rerun, novos commits,
+review, aprovação, exclusão de branch e alteração do ruleset permanecem gates
+separados e não são autorizados por este README.
