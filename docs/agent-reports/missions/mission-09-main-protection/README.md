@@ -2,11 +2,11 @@
 
 **Nível:** 3 - crítico
 
-**Status:** checkpoint local autorizado; ruleset ainda `disabled`; aguarda
-execução do Builder limitada aos Gates 1 a 3
+**Status:** objetivo técnico concluído e documentação de fechamento
+consolidada; PR nº 4 é o veículo protegido de publicação
 
-**Implementação remota:** `Protect main` ID `21151016` criado como `disabled`;
-ativação não autorizada
+**Implementação remota:** `Protect main` ID `21151016` ativo; PR nº 3 integrado
+no merge commit `3fb9752`; CI de push verde
 
 ## Objetivo
 
@@ -91,18 +91,47 @@ Missão 8 sem impor burocracia desnecessária ao projeto pessoal.
     - aprovação do inventário final, branch local exata e checkpoint commit;
     - lista fechada de 22 caminhos, incluindo a anotação do Shaft Desktop;
     - push, ativação, PR, rerun, merge e publicação mantidos bloqueados.
+18. [`18-builder-result-activation-and-functional-validation.md`](18-builder-result-activation-and-functional-validation.md)
+    - checkpoint, push seguro, ativação mínima e readback sem drift;
+    - PR nº 3, CI original verde, zero aprovações e mergeabilidade confirmada;
+    - handoff do Builder para revisão independente, sem declarar aceitação.
+19. [`19-reviewer-review-activation-and-functional-validation.md`](19-reviewer-review-activation-and-functional-validation.md)
+    - revisão independente de Git, ruleset, PR, CI e autorizações por gate;
+    - confirmação de zero drift, rollback, rerun, review, aprovação ou merge;
+    - veredito `Approved`, sem declarar aceitação humana ou missão concluída.
+20. [`20-direction-activation-functional-acceptance.md`](20-direction-activation-functional-acceptance.md)
+    - aceitação humana do veredito independente `Approved`;
+    - aprovação técnica da implementação e da validação funcional;
+    - merge, commit, push, exclusão de branch e publicação preservados como
+      gates separados.
+21. [`21-direction-merge-completion.md`](21-direction-merge-completion.md)
+    - merge autorizado do PR nº 3 por merge commit, sem bypass ou exclusão da
+      branch;
+    - CI automática de push aprovada no Node 22.18.0 com 57/57 testes;
+    - conclusão do objetivo técnico e preservação da publicação documental
+      como gate separado.
 
 ## Limites
 
-Foi criado somente o ruleset `Protect main` ID `21151016`, preservado como
-`disabled`. Como está desabilitado, ele não produz regras efetivas sobre a
-`main`. Não houve mudança de código, workflow, Actions Settings, proteção
-clássica, métodos de merge, dados, Notion, D1, deploy, branch, commit, push, PR
-ou publicação.
+O ruleset `Protect main` ID `21151016` está `active`, com o campo
+`require_extra_approval_for_unattributed_changes` em `false`, bypass vazio e
+quatro regras efetivas sobre a `main`. A branch de validação permanece no
+checkpoint `ed38dc5e54173a6a2aaa1b7cac88238c055d7ce6`; o PR nº 3 foi integrado
+no merge commit `3fb975207558a96a73cff393424708cfe3e9b846`, que permanece como
+SHA da `main` protegida. O PR nº 4, originado da branch
+`codex/mission-09-closing-docs`, é o veículo protegido para publicar este
+pacote documental.
 
-O campo `require_extra_approval_for_unattributed_changes` está em `false`, sem
-drift, e sua correção foi aceita tecnicamente pela Direção. O ruleset permanece
-`disabled`, sem regras efetivas sobre a `main`. Somente o inventário final, a
-branch local `codex/mission-09-main-protection-validation` e um checkpoint
-commit local nos 22 caminhos aprovados estão autorizados. Push, ativação, PR,
-rerun, merge, publicação e novas alterações remotas não estão autorizados.
+O documento 17 autorizou somente os Gates 1 a 3. Push, ativação, criação do PR,
+observação da CI e mudança para ready foram autorizados depois, pela Direção,
+em gates separados. A implementação e a validação funcional receberam o
+veredito independente `Approved` e foram aceitas tecnicamente pela Direção. O
+PR nº 3 foi integrado no merge commit
+`3fb975207558a96a73cff393424708cfe3e9b846`, e a CI automática de push foi
+aprovada na primeira tentativa com 57/57 testes. O objetivo técnico da missão
+está concluído.
+
+A correção final destes índices foi autorizada como um único commit normal e
+push adicional no PR nº 4. A integração do PR nº 4, rerun, novos commits,
+review, aprovação, exclusão de branch e alteração do ruleset permanecem gates
+separados e não são autorizados por este README.

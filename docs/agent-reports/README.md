@@ -36,8 +36,9 @@ scrollback.
   GitHub CI integrated and verified on `main` with Node 22.18.0 and 57/57
   tests; branch protection remained outside its scope.
 - [`mission-09-main-protection`](missions/mission-09-main-protection/README.md):
-  correction accepted and local checkpoint authorized; `Protect main` remains
-  disabled, while push, activation, PR, merge, and publication stay pending.
+  `Protect main` active, independently approved, and integrated through PR 3;
+  post-merge CI passed, and closing documents are consolidated through the
+  protected publication flow in PR 4.
 
 ## Rules
 
