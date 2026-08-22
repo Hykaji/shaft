@@ -73,7 +73,7 @@ repositório e aceitos pela Direção:
   corte;
 - [ ] corte para D1 aprovado, executado e observado sem perda ou duplicação de
   check-ins e XP;
-- [ ] suíte crítica automatizada para proteger integrações futuras na `main`;
+- [x] suíte crítica automatizada para proteger integrações futuras na `main`;
 - [ ] recuperação, privacidade e comportamento do modo legado documentados e
   verificados após o corte.
 
@@ -186,6 +186,28 @@ permissões e continuidade deverão ser projetados explicitamente pelo Shaft.
   indisponível;
 - avaliar custos, privacidade, retenção, observabilidade e recuperação antes de
   escolher modelos e recursos.
+
+### Estratégia de template e núcleo compartilhado
+
+A versão desktop não deve nascer como uma cópia independente do Shaft nem de
+um template genérico de produtividade. A direção preferida é criar, quando o
+número de funcionalidades justificar, um **Shaft Starter** próprio para a
+camada de aplicativo instalada.
+
+Esse scaffold deverá reutilizar o núcleo estável do Shaft e fornecer somente a
+infraestrutura repetitiva do desktop, como janela, menus, ícone, notificações,
+atualizador, armazenamento seguro, logs, diagnóstico e limites de integração
+com o sistema operacional. Regras de negócio, contratos de dados, componentes
+visuais e cliente de API deverão ser compartilhados com a aplicação web sempre
+que isso for seguro e sustentável.
+
+A primeira missão dessa trilha deverá comparar uma prova de conceito pequena
+em Electron Forge e Tauri, medindo pelo menos consumo de memória, tamanho do
+pacote, complexidade de build, atualização, assinatura, segurança e quantidade
+de código realmente reutilizada. A escolha não deve ser feita apenas pela
+rapidez do scaffold inicial. Python não é requisito presumido dessa estratégia;
+novos runtimes só devem ser instalados quando a tecnologia escolhida realmente
+os exigir.
 
 ### Relação com o roadmap atual
 
