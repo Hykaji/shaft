@@ -73,7 +73,8 @@ repositório e aceitos pela Direção:
   corte;
 - [ ] corte para D1 aprovado, executado e observado sem perda ou duplicação de
   check-ins e XP;
-- [x] suíte crítica automatizada para proteger integrações futuras na `main`;
+- [x] suíte crítica automatizada exigida por PR e pelo ruleset `Protect main`
+  para proteger integrações futuras na `main`;
 - [ ] recuperação, privacidade e comportamento do modo legado documentados e
   verificados após o corte.
 
