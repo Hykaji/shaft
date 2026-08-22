@@ -2,7 +2,7 @@
 
 **Nível:** 3 - crítico
 
-**Status:** Aprovada tecnicamente; publicação documental e merge pendentes
+**Status:** Concluída, integrada na main e verificada pela CI
 
 **Implementação:** Contrato local e workflow alinhados em Node 22.18.0; build e
 57/57 testes aprovados no runtime mínimo
@@ -84,6 +84,10 @@ proteção da `main` dependem de aprovações humanas separadas.
     - aceitação técnica final explícita da Missão 8;
     - consolidação das evidências locais e remotas aprovadas;
     - preservação dos gates separados de documentação, merge e proteção.
+15. [`15-direction-merge-completion.md`](15-direction-merge-completion.md)
+    - integração autorizada do PR 2 na `main`;
+    - CI de `push` aprovada com 57/57 testes;
+    - encerramento da missão e encaminhamento da proteção para a Missão 9.
 
 ## Proveniência da investigação
 
@@ -102,6 +106,5 @@ harnesses, `pnpm-lock`, proteção da `main`, configurações do GitHub, dados,
 Notion, D1, segredos ou deploy. Também não fez commit, push, novo PR, rerun ou
 merge.
 
-O próximo passo é uma autorização humana específica para publicar no PR os
-documentos 12 a 14 e o índice. Merge e proteção da `main` permanecem gates
-separados conforme o nível da missão.
+A Missão 8 está concluída. A proteção da `main` e a exigência do check são
+tratadas separadamente na Missão 9.

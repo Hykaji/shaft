@@ -32,6 +32,12 @@ scrollback.
 - [`mission-07-alpha-skeleton-consolidation`](missions/mission-07-alpha-skeleton-consolidation/README.md):
   documentation and execution-level alignment accepted after lightweight
   review; repository actions remain separately controlled.
+- [`mission-08-github-ci`](missions/mission-08-github-ci/README.md):
+  GitHub CI integrated and verified on `main` with Node 22.18.0 and 57/57
+  tests; branch protection remained outside its scope.
+- [`mission-09-main-protection`](missions/mission-09-main-protection/README.md):
+  correction accepted and local checkpoint authorized; `Protect main` remains
+  disabled, while push, activation, PR, merge, and publication stay pending.
 
 ## Rules
 
